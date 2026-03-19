@@ -1,0 +1,60 @@
+services:
+
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: nextcloud-dev
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - nc_dev
+
+  nextcloud:
+    image: nextcloud:31
+    ports:
+      - "8080:80"
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_DB: nextcloud
+      POSTGRES_USER: nextcloud
+      POSTGRES_PASSWORD: nextcloud-dev
+      NEXTCLOUD_ADMIN_USER: admin
+      NEXTCLOUD_ADMIN_PASSWORD: admin
+      NEXTCLOUD_TRUSTED_DOMAINS: localhost nextcloud
+    volumes:
+      - nc_data:/var/www/html
+    depends_on:
+      - db
+    networks:
+      - nc_dev
+
+  service:
+    build: .
+    environment:
+      APP_ID: odf-kit-service
+      APP_VERSION: 0.1.0
+      APP_DISPLAY_NAME: odf-kit Service
+      APP_HOST: 0.0.0.0
+      APP_PORT: 2600
+      APP_SECRET: dev-secret-change-me
+      APP_PERSISTENT_STORAGE: /nc_app_odf-kit-service_data
+      NEXTCLOUD_URL: http://nextcloud
+    ports:
+      - "2600:2600"
+    volumes:
+      - ./src:/app/src
+      - service_data:/nc_app_odf-kit-service_data
+    depends_on:
+      - nextcloud
+    networks:
+      - nc_dev
+
+networks:
+  nc_dev:
+
+volumes:
+  db_data:
+  nc_data:
+  service_data:
