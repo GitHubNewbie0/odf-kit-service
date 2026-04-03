@@ -2,7 +2,7 @@
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
   <id>odf-kit-service</id>
-  <n>odf-kit Service</n>
+  <name>odf-kit Service</name>
   <summary>ODF document generation and conversion service</summary>
   <description>
     Exposes odf-kit as a shared HTTP service for other ExApps.
