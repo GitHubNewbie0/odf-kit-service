@@ -11,6 +11,7 @@ import { generate }     from './routes/generate.js'
 import { fill }         from './routes/fill.js'
 import { convert }      from './routes/convert.js'
 import { convertOdt }   from './routes/convert-odt.js'
+import { fileAction }   from './routes/file-action.js'
 import { init }         from './routes/init.js'
 
 const app = express()
@@ -29,6 +30,7 @@ app.post('/convert/html',  requireAuth, (req, res) => convert(req, res, 'html'))
 app.post('/convert/typst', requireAuth, (req, res) => convert(req, res, 'typst'))
 app.post('/convert/pdf',   requireAuth, (req, res) => convert(req, res, 'pdf'))
 app.post('/convert/odt',   requireAuth, convertOdt)
+app.post('/file-action',   requireAuth, fileAction)
 
 // Generic error handler — catches anything thrown inside route handlers
 app.use((err, _req, res, _next) => {
@@ -41,6 +43,5 @@ const host = process.env.APP_HOST
 
 app.listen(port, host, () => {
   console.log(
-    `odf-kit-service ${process.env.APP_VERSION} listening on ${host}:${port}`
-  )
+    `odf-kit-service ${process.env.APP_VERSION} listening on ${host}:${port}`)
 })

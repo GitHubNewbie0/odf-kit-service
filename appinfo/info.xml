@@ -9,7 +9,7 @@
     Provides document generation, template filling, HTML conversion,
     Typst conversion, and PDF export.
   </description>
-  <version>0.2.0</version>
+  <version>0.1.0</version>
   <licence>agpl</licence>
   <author>Scott Wirth</author>
   <namespace>OdfKitService</namespace>
@@ -63,7 +63,7 @@
         <bruteforce_protection>[401, 500]</bruteforce_protection>
       </route>
       <route>
-        <url>/convert/odt</url>
+        <url>/file-action</url>
         <verb>POST</verb>
         <access_level>USER</access_level>
         <headers_to_exclude>[]</headers_to_exclude>
