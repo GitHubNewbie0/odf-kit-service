@@ -9,9 +9,6 @@
 //   odf-export-md   — text/markdown  — "Export as ODT"
 //   odf-export-html — text/html      — "Export as ODT"
 //   odf-export-txt  — text/plain     — "Export as ODT"
-//
-// Each action calls POST /file-action on this service with the file context.
-// Multi-file selection is supported — AppAPI sends all selected file IDs.
 
 const FILE_ACTIONS = [
   { name: 'odf-export-md',   mime: 'text/markdown', displayName: 'Export as ODT' },
@@ -36,9 +33,11 @@ function ocsHeaders() {
   }
 }
 
+const baseUrl = () => process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL
+
 /** Register a single file action with Nextcloud AppAPI. */
 async function registerFileAction(action) {
-  const url = `${process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL}/ocs/v2.php/apps/app_api/api/v2/ui/files-actions-menu`
+  const url = `${baseUrl()}/ocs/v2.php/apps/app_api/api/v2/ui/files-actions-menu`
   const res = await fetch(url, {
     method:  'POST',
     headers: ocsHeaders(),
@@ -62,10 +61,12 @@ async function registerFileAction(action) {
 
 /** Unregister a single file action from Nextcloud AppAPI. */
 async function unregisterFileAction(action) {
-  const url = `${process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL}/ocs/v2.php/apps/app_api/api/v2/ui/files-actions-menu/${action.name}`
+  // Unregister uses v1 endpoint with JSON body — not a URL parameter
+  const url = `${baseUrl()}/ocs/v2.php/apps/app_api/api/v1/ui/files-actions-menu`
   const res = await fetch(url, {
     method:  'DELETE',
     headers: ocsHeaders(),
+    body: JSON.stringify({ name: action.name }),
   })
   if (!res.ok) {
     console.error(`Failed to unregister file action ${action.name}: ${res.status}`)
