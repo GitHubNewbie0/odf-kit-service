@@ -30,7 +30,7 @@ function appApiHeaders(userId) {
  * @returns {Promise<Buffer>}
  */
 export async function fetchFile(userId, filePath) {
-  const url = `${process.env.NEXTCLOUD_URL}/remote.php/dav/files/${encodeURIComponent(userId)}/${filePath}`
+  const url = `${(process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL)}/remote.php/dav/files/${encodeURIComponent(userId)}/${filePath}`
 
   const res = await fetch(url, {
     method: 'GET',
@@ -61,7 +61,7 @@ export async function fetchFile(userId, filePath) {
  * @returns {Promise<Buffer>}
  */
 export async function fetchFileById(userId, fileId) {
-  const searchUrl = `${process.env.NEXTCLOUD_URL}/remote.php/dav/`
+  const searchUrl = `${(process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL)}/remote.php/dav/`
 
   const searchBody = `<?xml version="1.0" encoding="UTF-8"?>
 <d:searchrequest xmlns:d="DAV:" xmlns:oc="http://owncloud.org/ns">
@@ -113,7 +113,7 @@ export async function fetchFileById(userId, fileId) {
   }
 
   // The href is a full path on the server — prepend the base URL to fetch it
-  const fileUrl = `${process.env.NEXTCLOUD_URL}${match[1].trim()}`
+  const fileUrl = `${(process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL)}${match[1].trim()}`
 
   const fileRes = await fetch(fileUrl, {
     method: 'GET',
@@ -138,7 +138,7 @@ export async function fetchFileById(userId, fileId) {
  * @returns {Promise<string|null>} - Nextcloud file ID from x-file-id response header, or null
  */
 export async function putFile(userId, filePath, buffer, mimeType) {
-  const url = `${process.env.NEXTCLOUD_URL}/remote.php/dav/files/${encodeURIComponent(userId)}/${filePath}`
+  const url = `${(process.env.WEBDAV_URL ?? process.env.NEXTCLOUD_URL)}/remote.php/dav/files/${encodeURIComponent(userId)}/${filePath}`
 
   const res = await fetch(url, {
     method: 'PUT',
