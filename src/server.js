@@ -1,33 +1,45 @@
 // src/server.js
 
 import express      from 'express'
-import { requireAuth }  from './auth.js'
-import { heartbeat }    from './routes/heartbeat.js'
-import { enabled }      from './routes/enabled.js'
-import { generate }     from './routes/generate.js'
-import { fill }         from './routes/fill.js'
-import { convert }      from './routes/convert.js'
-import { convertOdt }   from './routes/convert-odt.js'
-import { fileAction }   from './routes/file-action.js'
-import { init }         from './routes/init.js'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
+import { requireAuth }   from './auth.js'
+import { heartbeat }     from './routes/heartbeat.js'
+import { enabled }       from './routes/enabled.js'
+import { generate }      from './routes/generate.js'
+import { fill }          from './routes/fill.js'
+import { convert }       from './routes/convert.js'
+import { convertOdt }    from './routes/convert-odt.js'
+import { fileAction }    from './routes/file-action.js'
+import { convertFile }   from './routes/convert-file.js'
+import { init }          from './routes/init.js'
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const app = express()
 
 app.use(express.json({ limit: '10mb' }))
 
+// Serve static UI assets (scripts, icons)
+app.use('/ui', express.static(join(__dirname, 'public/ui')))
+app.use('/img', express.static(join(__dirname, 'public/img')))
+
 // Lifecycle — no auth on heartbeat
-app.get('/heartbeat',      heartbeat)
-app.put('/enabled',        requireAuth, enabled)
-app.post('/init',          requireAuth, init)
+app.get('/heartbeat',         heartbeat)
+app.put('/enabled',           requireAuth, enabled)
+app.post('/init',             requireAuth, init)
+
+// Top menu UI conversion endpoint
+app.post('/ui/convert-file',  requireAuth, convertFile)
 
 // Service routes
-app.post('/generate',      requireAuth, generate)
-app.post('/fill',          requireAuth, fill)
-app.post('/convert/html',  requireAuth, (req, res) => convert(req, res, 'html'))
-app.post('/convert/typst', requireAuth, (req, res) => convert(req, res, 'typst'))
-app.post('/convert/pdf',   requireAuth, (req, res) => convert(req, res, 'pdf'))
-app.post('/convert/odt',   requireAuth, convertOdt)
-app.post('/file-action',   requireAuth, fileAction)
+app.post('/generate',         requireAuth, generate)
+app.post('/fill',             requireAuth, fill)
+app.post('/convert/html',     requireAuth, (req, res) => convert(req, res, 'html'))
+app.post('/convert/typst',    requireAuth, (req, res) => convert(req, res, 'typst'))
+app.post('/convert/pdf',      requireAuth, (req, res) => convert(req, res, 'pdf'))
+app.post('/convert/odt',      requireAuth, convertOdt)
+app.post('/file-action',      requireAuth, fileAction)
 
 // Generic error handler
 app.use((err, _req, res, _next) => {
