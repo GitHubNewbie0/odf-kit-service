@@ -5,17 +5,11 @@
   "engines": { "node": ">=22" },
   "scripts": {
     "start": "node src/server.js",
-    "dev": "node --watch src/server.js",
-    "build:frontend": "esbuild src/frontend/odf-kit-files.ts --bundle --format=esm --outfile=src/public/js/odf-kit-files.js --external:@nextcloud/files"
+    "dev": "node --watch src/server.js"
   },
   "dependencies": {
     "express": "^5.1.0",
     "marked": "^15.0.0",
     "odf-kit": "^0.9.2"
-  },
-  "devDependencies": {
-    "@nextcloud/files": "^4.0.0",
-    "esbuild": "^0.25.0",
-    "typescript": "^5.7.0"
   }
 }

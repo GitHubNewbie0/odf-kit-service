@@ -1,8 +1,6 @@
 // src/server.js
 
-import express        from 'express'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import express      from 'express'
 import { requireAuth }  from './auth.js'
 import { heartbeat }    from './routes/heartbeat.js'
 import { enabled }      from './routes/enabled.js'
@@ -13,14 +11,9 @@ import { convertOdt }   from './routes/convert-odt.js'
 import { fileAction }   from './routes/file-action.js'
 import { init }         from './routes/init.js'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
 const app = express()
 
 app.use(express.json({ limit: '10mb' }))
-
-// Serve compiled frontend bundle — AppAPI proxies requests here for our script
-app.use('/js', express.static(join(__dirname, '../public/js')))
 
 // Lifecycle — no auth on heartbeat
 app.get('/heartbeat',      heartbeat)
