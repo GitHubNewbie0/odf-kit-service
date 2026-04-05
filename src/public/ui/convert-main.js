@@ -44,8 +44,8 @@
             padding: 8px 12px;
             border-radius: 4px;
             border: 1px solid var(--color-border, #ccc);
-            background: var(--color-main-background, #fff);
-            color: var(--color-main-text, #222);
+            background: var(--color-primary-element, #0082c9);
+            color: #ffffff;
             font-size: 14px;
             min-width: 180px;
           ">
@@ -55,6 +55,7 @@
             <option value="A3">A3 (297 × 420 mm)</option>
             <option value="A5">A5 (148 × 210 mm)</option>
           </select>
+          <div style="color: #ffffff; font-size: 12px; margin-top: 4px; opacity: 0.8;">Click to change format</div>
         </div>
 
         <button id="odf-pick-btn" class="button primary" style="margin-bottom: 16px;">
@@ -70,7 +71,7 @@
             align-items: center;
             gap: 12px;
           ">
-            <span id="odf-file-path" style="flex: 1; word-break: break-all;"></span>
+            <span id="odf-file-path" style="flex: 1; word-break: break-all; color: var(--color-main-text, #222);"></span>
             <button id="odf-convert-btn" class="button primary">Export as ODT</button>
           </div>
         </div>
@@ -126,7 +127,12 @@
 
         if (response.ok) {
           resultDiv.style.background = 'var(--color-success-background, #e8f5e9)'
-          resultDiv.innerHTML = `✅ Saved as <strong>${data.outputPath}</strong>`
+          resultDiv.innerHTML = `<span style="color: var(--color-main-text, #222);">✅ Saved as <strong>${data.outputPath}</strong></span><div style="margin-top: 12px; display: flex; gap: 8px;"><button id="odf-again-btn" class="button primary">Convert another file</button><a href="/apps/files" class="button">Go to Files</a></div>`
+          document.getElementById('odf-again-btn').addEventListener('click', () => {
+            selectedPath = null
+            document.getElementById('odf-selected').style.display = 'none'
+            document.getElementById('odf-result').style.display = 'none'
+          })
         } else {
           resultDiv.style.background = 'var(--color-error-background, #fde8e8)'
           resultDiv.textContent = `❌ Error: ${data.error ?? 'Conversion failed'}`
