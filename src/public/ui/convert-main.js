@@ -36,6 +36,27 @@
           The ODT file will be saved in the same folder as the original.
         </p>
 
+        <div style="margin-bottom: 16px;">
+          <label for="odf-page-format" style="color: #ffffff; display: block; margin-bottom: 6px; font-weight: 600;">
+            Page format
+          </label>
+          <select id="odf-page-format" style="
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid var(--color-border, #ccc);
+            background: var(--color-main-background, #fff);
+            color: var(--color-main-text, #222);
+            font-size: 14px;
+            min-width: 180px;
+          ">
+            <option value="A4">A4 (Europe, 210 × 297 mm)</option>
+            <option value="letter">Letter (USA, 8.5 × 11 in)</option>
+            <option value="legal">Legal (USA, 8.5 × 14 in)</option>
+            <option value="A3">A3 (297 × 420 mm)</option>
+            <option value="A5">A5 (148 × 210 mm)</option>
+          </select>
+        </div>
+
         <button id="odf-pick-btn" class="button primary" style="margin-bottom: 16px;">
           Choose File…
         </button>
@@ -79,6 +100,7 @@
     document.getElementById('odf-convert-btn').addEventListener('click', async () => {
       const resultDiv = document.getElementById('odf-result')
       const convertBtn = document.getElementById('odf-convert-btn')
+      const pageFormat = document.getElementById('odf-page-format').value
 
       convertBtn.disabled = true
       convertBtn.textContent = 'Converting…'
@@ -92,8 +114,9 @@
             'requesttoken': OC.requestToken,
           },
           body: JSON.stringify({
-            path:   selectedPath,
-            userId: OC.currentUser,
+            path:       selectedPath,
+            userId:     OC.currentUser,
+            pageFormat: pageFormat,
           }),
         })
 

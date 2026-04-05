@@ -3,22 +3,19 @@
 //
 // Called from the top menu UI page when user clicks "Export as ODT".
 //
-// Accepts: { path: string, userId: string }
-//   path   — user-relative file path e.g. "Documents/notes.md"
-//   userId — Nextcloud user ID
+// Accepts: { path: string, userId: string, pageFormat?: string }
+//   path       — user-relative file path e.g. "Documents/notes.md"
+//   userId     — Nextcloud user ID
+//   pageFormat — "A4" | "letter" | "legal" | "A3" | "A5" (default: "A4")
 //
 // Fetches the file by WebDAV path, converts based on mime type,
 // saves the ODT next to the original file.
-//
-// Conversion:
-//   text/markdown → marked (HTML) → htmlToOdt()
-//   text/html     → htmlToOdt() directly
-//   text/plain    → wrap lines in <p> → htmlToOdt()
 
 import { htmlToOdt } from 'odf-kit'
 import { marked }    from 'marked'
 
 const ODT_MIME = 'application/vnd.oasis.opendocument.text'
+const VALID_FORMATS = new Set(['A4', 'letter', 'legal', 'A3', 'A5'])
 
 /** Replace file extension with .odt */
 function toOdtPath(filePath) {
@@ -34,10 +31,11 @@ function escapeHtml(text) {
 }
 
 /** Convert file bytes to ODT based on mime type. */
-async function convertToOdt(buffer, mimeType, fileName) {
+async function convertToOdt(buffer, mimeType, fileName, pageFormat) {
   const text  = buffer.toString('utf8')
   const title = fileName.replace(/\.[^.]+$/, '')
-  const options = { pageFormat: 'A4', metadata: { title } }
+  const format = VALID_FORMATS.has(pageFormat) ? pageFormat : 'A4'
+  const options = { pageFormat: format, metadata: { title } }
 
   let html
 
@@ -118,7 +116,7 @@ async function saveFile(userId, filePath, bytes) {
 }
 
 export async function convertFile(req, res) {
-  const { path: filePath, userId } = req.body
+  const { path: filePath, userId, pageFormat } = req.body
 
   if (!filePath) return res.status(400).json({ error: 'missing path' })
   if (!userId)   return res.status(400).json({ error: 'missing userId' })
@@ -129,10 +127,10 @@ export async function convertFile(req, res) {
   try {
     const mimeType = await getMimeType(userId, filePath)
     const buffer   = await fetchFileByPath(userId, filePath)
-    const bytes    = await convertToOdt(buffer, mimeType, fileName)
+    const bytes    = await convertToOdt(buffer, mimeType, fileName, pageFormat ?? 'A4')
     await saveFile(userId, outputPath, Buffer.from(bytes))
 
-    console.log(`Converted ${filePath} → ${outputPath}`)
+    console.log(`Converted ${filePath} → ${outputPath} (${pageFormat ?? 'A4'})`)
     res.json({ status: 'ok', outputPath })
   } catch (err) {
     console.error(`Failed to convert ${filePath}:`, err.message)
