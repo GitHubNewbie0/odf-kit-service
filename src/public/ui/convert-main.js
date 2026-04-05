@@ -28,10 +28,10 @@
         max-width: 640px;
         margin: 0 auto;
         font-family: var(--font-face, Arial, sans-serif);
-        color: var(--color-main-text, #222);
+        color: #ffffff;
       ">
-        <h2 style="margin-bottom: 8px;">Export to ODT</h2>
-        <p style="color: var(--color-text-lighter, #666); margin-bottom: 24px;">
+        <h2 style="margin-bottom: 8px; color: #ffffff;">Export to ODT</h2>
+        <p style="color: #ffffff; margin-bottom: 24px;">
           Select a Markdown, HTML, or plain text file to convert to ODT format.
           The ODT file will be saved in the same folder as the original.
         </p>
