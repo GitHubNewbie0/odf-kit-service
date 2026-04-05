@@ -87,7 +87,10 @@
       try {
         const response = await fetch(`${PROXY_BASE}/ui/convert-file`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'requesttoken': OC.requestToken,
+          },
           body: JSON.stringify({
             path:   selectedPath,
             userId: OC.currentUser,

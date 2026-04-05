@@ -6,7 +6,7 @@
 // On disable: unregister them
 
 const TOP_MENU_NAME = 'convert'
-const SCRIPT_NAME   = 'convert-main'
+const SCRIPT_NAME   = 'convert'
 const SCRIPT_PATH   = 'ui/convert-main'  // .js appended by AppAPI
 
 function systemAuthHeader() {
