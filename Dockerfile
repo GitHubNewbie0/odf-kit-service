@@ -1,31 +1,26 @@
-FROM node:22-slim
+# odf-kit-service — Nextcloud ExApp
+# Converts Markdown, HTML, and plain text files to ODT format.
+#
+# AppAPI provides all required environment variables at runtime:
+#   APP_ID, APP_SECRET, APP_HOST, APP_PORT, APP_VERSION,
+#   APP_DISPLAY_NAME, APP_PERSISTENT_STORAGE, NEXTCLOUD_URL,
+#   AA_VERSION, COMPUTE_DEVICE
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    xz-utils \
-    fontconfig \
-    fonts-liberation \
-    fonts-dejavu-core \
-    fonts-noto-core \
-  && rm -rf /var/lib/apt/lists/* \
-  && fc-cache -fv
-
-ARG TYPST_VERSION=0.14.2
-ARG TARGETARCH
-RUN case "$TARGETARCH" in \
-      amd64) TYPST_ARCH="x86_64-unknown-linux-musl" ;; \
-      arm64) TYPST_ARCH="aarch64-unknown-linux-musl" ;; \
-      *) echo "Unsupported arch: $TARGETARCH" && exit 1 ;; \
-    esac && \
-    curl -fsSL \
-      "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-${TYPST_ARCH}.tar.xz" \
-      | tar -xJ --strip-components=1 -C /usr/local/bin/ "typst-${TYPST_ARCH}/typst" && \
-    typst --version
+FROM node:22-alpine
 
 WORKDIR /app
+
+# Copy dependency files first for better layer caching
 COPY package*.json ./
+
+# Install production dependencies only
 RUN npm ci --omit=dev
+
+# Copy application source
 COPY . .
 
-EXPOSE $APP_PORT
+# Expose default ExApp port (AppAPI assigns actual port via APP_PORT env var)
+EXPOSE 23000
+
+# Start the service — reads APP_HOST and APP_PORT from environment
 CMD ["node", "src/server.js"]
