@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <info xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
       xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
-  <id>odf-kit-service</id>
+  <id>odf_kit_service</id>
   <name>odf-kit Service</name>
   <summary>Export Markdown, HTML, and text files to ODT format</summary>
   <description>
