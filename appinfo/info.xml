@@ -4,21 +4,58 @@
   <id>odf_kit_service</id>
   <name>odf-kit Service</name>
   <summary>Export Markdown, HTML, and text files to ODT format</summary>
-  <description>
-    Export your Nextcloud files to the ISO standard ODT format (OpenDocument Text),
-    used by LibreOffice, Microsoft Word, and government document systems worldwide.
+  <description><![CDATA[Export your Nextcloud files to ODT (OpenDocument Text) — the ISO standard format used by LibreOffice, governments, and organisations worldwide.
 
-    Supports Markdown, HTML, and plain text files. Choose your page format:
-    A4 (Europe), Letter (USA), Legal, A3, or A5.
+## What it does
 
-    Powered by odf-kit — a zero-dependency JavaScript library for ODF document generation.
-    No LibreOffice required. Works entirely within your Nextcloud instance.
-  </description>
+Click the **Export to ODT** icon in the Nextcloud top navigation bar, pick any Markdown, HTML, or plain text file, choose your page format, and click Export. The ODT file is saved next to the original.
+
+**Supported input formats:**
+- Markdown (.md)
+- HTML (.html)
+- Plain text (.txt)
+
+**Page formats:** A4 (Europe), Letter (USA), Legal, A3, A5
+
+## Why ODT?
+
+ODT is the ISO 26300 standard for word processing documents. Unlike proprietary formats, ODT files are guaranteed to open correctly in LibreOffice, OnlyOffice, and any other standards-compliant office suite — now and in the future. Many European governments mandate ODT for official documents.
+
+## No LibreOffice required
+
+Conversion is powered by odf-kit — a zero-dependency JavaScript library that runs entirely within your Nextcloud instance. No external services, no LibreOffice installation, no server-side rendering processes.
+
+## For developers
+
+odf-kit-service also exposes an HTTP API that other Nextcloud apps and ExApps can call via the AppAPI proxy:
+
+- POST /convert/odt — convert HTML to ODT
+- POST /generate — build ODT from a JSON document spec
+- POST /fill — fill an ODT template with data
+- POST /convert/html — convert ODT to HTML
+- POST /convert/typst — convert ODT to Typst markup
+
+Any PHP app, ExApp, or browser-based Nextcloud frontend can call these endpoints via /apps/app_api/proxy/odf_kit_service/<route> with AppAPIAuth headers. No knowledge of host, port, or IP is needed.
+
+## Data sovereignty
+
+All processing happens on your own server. No data leaves your Nextcloud instance. Files are read and written via WebDAV using your existing Nextcloud credentials.
+
+## Documentation
+
+Full documentation including manual install instructions, API reference, and examples for calling from other apps:
+https://github.com/GitHubNewbie0/odf-kit-service#readme
+
+## Source code
+
+https://github.com/GitHubNewbie0/odf-kit-service — AGPLv3
+  ]]></description>
   <version>0.4.0</version>
   <licence>agpl</licence>
   <author>Scott Wirth</author>
   <namespace>OdfKitService</namespace>
   <category>tools</category>
+  <bugs>https://github.com/GitHubNewbie0/odf-kit-service/issues</bugs>
   <dependencies>
     <nextcloud min-version="30" max-version="34"/>
   </dependencies>
